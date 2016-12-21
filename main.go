@@ -68,7 +68,7 @@ func FilterStdout(stdout io.ReadCloser) WinfoMap {
 		reg     = regexp.MustCompile(`(?P<Name>\S+)\s+` +
 			`(?P<APMAC>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))\s+` +
 			`(?P<Strength>-+\d+)\s+` +
-			`(?P<Channel>\d+)\s+` +
+			`(?P<Channel>[-0-9,]+)\s+` +
 			`(?P<HT>\S+)\s+` +
 			`(?P<CC>\S+)\s+` +
 			`(?P<Security>[A-Za-z0-9]+)` +
