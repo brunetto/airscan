@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/brunetto/goutils/debug"
+	"sort"
 )
 
 var Debug = false
@@ -22,7 +23,7 @@ func main() {
 		stdout     io.ReadCloser
 	)
 
-	fmt.Println("Scanning...")
+	log.Println("Scanning...")
 
 	debug.LogDebug(Debug, "Creating command")
 	airportCmd = exec.Command("airport", "-s")
@@ -52,12 +53,10 @@ func main() {
 
 	debug.LogDebug(Debug, "Print result")
 	fmt.Println()
-	for k, _ := range wil {
-		fmt.Println(k)
-	}
+	wil.PrintSorted()
 }
 
-func FilterStdout(stdout io.ReadCloser) WinfoList {
+func FilterStdout(stdout io.ReadCloser) WinfoMap {
 	if Debug {
 		defer debug.TimeMe(time.Now())
 	}
@@ -65,7 +64,7 @@ func FilterStdout(stdout io.ReadCloser) WinfoList {
 	var (
 		scanner *bufio.Scanner
 		line    string
-		wil     = WinfoList{}
+		wil     = WinfoMap{}
 		reg     = regexp.MustCompile(`(?P<Name>\S+)\s+` +
 			`(?P<APMAC>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))\s+` +
 			`(?P<Strength>-+\d+)\s+` +
@@ -127,4 +126,25 @@ type Winfo struct {
 	Group    string
 }
 
-type WinfoList map[string][]Winfo
+type WinfoMap map[string][]Winfo
+
+func (w *WinfoMap) GetSortedNames() []string {
+	var (
+		names []string
+	)
+
+	for k, _ := range *w {
+		names = append(names, k)
+	}
+	sort.Strings(names)
+	return names
+}
+
+func  (w *WinfoMap) PrintSorted() {
+	names := w.GetSortedNames()
+	fmt.Println()
+	for _, name := range names {
+		fmt.Println(name)
+	}
+	fmt.Println()
+}
