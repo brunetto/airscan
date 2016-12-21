@@ -40,7 +40,7 @@ func FilterStdout(stdout io.ReadCloser) WinfoList {
 						`(?P<Channel>\d+)\s+` +
 						`(?P<HT>\S+)\s+` +
 						`(?P<CC>\S+)\s+` +
-						`(?P<Security>\S+)` +
+						`(?P<Security>[A-Za-z0-9]+)` +
 						`(?P<SecurityGroup>\((?P<Auth>\S+)\/(?P<Unicast>\S+)\/(?P<Group>\S+)\)){0,1}`)
 		match []string
 		names map[string]int
@@ -56,14 +56,18 @@ func FilterStdout(stdout io.ReadCloser) WinfoList {
 				names[n] = i
 			}
 		}
-		tmp := Winfo{
-			Name: match[names["Name"]],
-			APMAC: match[names["APMAC"]],
-			Strength: match[names["Strength"]],
-			Channel: match[names["Channel"]],
-			HT: match[names["HT"]],
-			CC: match[names["CC"]],
-		}
+
+		wil = append(wil, Winfo{
+					Name: match[names["Name"]],
+					APMAC: match[names["APMAC"]],
+					Strength: match[names["Strength"]],
+					Channel: match[names["Channel"]],
+					HT: match[names["HT"]],
+					CC: match[names["CC"]],
+					Auth: match[names["Auth"]],
+					Unicast: match[names["Unicast"]],
+					Group: match[names["Group"]],
+					})
 
 	}
 
